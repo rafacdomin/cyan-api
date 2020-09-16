@@ -26,7 +26,7 @@ export default {
     return res.json(farm);
   },
   async index(req, res) {
-    const farms = await Farm.findAll();
+    const farms = await Farm.findAll({ include: { association: 'fields' } });
 
     return res.json(farms);
   },

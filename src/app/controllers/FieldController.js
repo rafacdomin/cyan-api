@@ -11,7 +11,7 @@ export default {
     });
 
     if (!farm) {
-      throw new AppError("Harvest doesn't exist");
+      throw new AppError("Farm doesn't exist");
     }
 
     if (req.user_id !== farm.harvest.mill.user_id) {
@@ -26,58 +26,67 @@ export default {
     return res.json(field);
   },
   async index(req, res) {
-    const farms = await Farm.findAll();
+    const fields = await Field.findAll();
 
-    return res.json(farms);
+    return res.json(fields);
   },
 
   async update(req, res) {
-    const { name, harvest_id } = req.body;
-    const { farm_id } = req.params;
+    const { latitude, longitude, farm_id } = req.body;
+    const { field_id } = req.params;
 
-    const farm = await Farm.findByPk(farm_id, {
-      include: { association: 'harvest', include: { association: 'mill' } },
+    const field = await Field.findByPk(field_id, {
+      include: {
+        association: 'farm',
+        include: { association: 'harvest', include: { association: 'mill' } },
+      },
     });
 
-    if (!farm) {
-      throw new AppError("Harvest doesn't  exist", 401);
+    if (!field) {
+      throw new AppError("Field doesn't  exist", 401);
     }
 
-    if (farm.harvest.mill.user_id !== req.user_id) {
+    if (field.farm.harvest.mill.user_id !== req.user_id) {
       throw new AppError("User doesn't have permission", 401);
     }
 
-    if (harvest_id) {
-      const harvest = await Harvest.findByPk(harvest_id, {
-        include: { association: 'mill' },
+    if (farm_id) {
+      const farm = await Farm.findByPk(farm_id, {
+        include: { association: 'harvest', include: { association: 'mill' } },
       });
 
-      if (harvest.mill.user_id !== req.user_id) {
+      if (farm.harvest.mill.user_id !== req.user_id) {
         throw new AppError("User doesn't have permission");
       }
     }
 
-    await farm.update({ name, harvest_id });
+    await field.update({
+      farm_id,
+      geography: { type: 'Point', coordinates: [latitude, longitude] },
+    });
 
-    return res.json(farm);
+    return res.json(field);
   },
 
   async delete(req, res) {
-    const { farm_id } = req.params;
+    const { field_id } = req.params;
 
-    const farm = await Farm.findByPk(farm_id, {
-      include: { association: 'harvest', include: { association: 'mill' } },
+    const field = await Field.findByPk(field_id, {
+      include: {
+        association: 'farm',
+        include: { association: 'harvest', include: { association: 'mill' } },
+      },
     });
 
-    if (!farm) {
-      throw new AppError("Farm doesn't  exist", 401);
+    if (!field) {
+      throw new AppError("Field doesn't  exist", 401);
     }
 
-    if (farm.harvest.mill.user_id !== req.user_id) {
+    if (field.farm.harvest.mill.user_id !== req.user_id) {
       throw new AppError("User doesn't have permission", 401);
     }
 
-    await farm.destroy();
+    await field.destroy();
 
     return res.send();
   },

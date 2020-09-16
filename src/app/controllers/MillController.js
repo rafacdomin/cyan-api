@@ -22,7 +22,10 @@ export default {
 
   async index(req, res) {
     const mills = await Mill.findAll({
-      include: { association: 'harvests', include: { association: 'farms' } },
+      include: {
+        association: 'harvests',
+        include: { association: 'farms', include: { association: 'fields' } },
+      },
     });
 
     return res.json(mills);

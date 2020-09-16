@@ -32,5 +32,8 @@ mapRoutes.put('/farms/:farm_id', authMiddleware, FarmController.update);
 mapRoutes.delete('/farms/:farm_id', authMiddleware, FarmController.delete);
 
 mapRoutes.post('/fields', authMiddleware, FieldController.store);
+mapRoutes.get('/fields', FieldController.index);
+mapRoutes.put('/fields/:field_id', authMiddleware, FieldController.update);
+mapRoutes.delete('/fields/:field_id', authMiddleware, FieldController.delete);
 
 export default mapRoutes;

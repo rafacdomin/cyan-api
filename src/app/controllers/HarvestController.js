@@ -26,7 +26,7 @@ export default {
   },
   async index(req, res) {
     const harvests = await Harvest.findAll({
-      include: { association: 'farms' },
+      include: { association: 'farms', include: { association: 'fields' } },
     });
 
     return res.json(harvests);
