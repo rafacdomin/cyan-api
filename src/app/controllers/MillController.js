@@ -21,7 +21,7 @@ export default {
   },
 
   async index(req, res) {
-    const mills = await Mill.findAll();
+    const mills = await Mill.findAll({ include: { association: 'harvests' } });
 
     return res.json(mills);
   },

@@ -3,12 +3,15 @@ const dbConfig = require('../config/database');
 
 const User = require('../app/models/User');
 const Mill = require('../app/models/Mill');
+const Harvest = require('../app/models/Harvest');
 
 const connection = new Sequelize(dbConfig);
 
 User.init(connection);
 Mill.init(connection);
+Harvest.init(connection);
 
 Mill.associate(connection.models);
+Harvest.associate(connection.models);
 
 module.exports = connection;

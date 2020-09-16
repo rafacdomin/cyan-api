@@ -1,6 +1,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 
-class Mill extends Model {
+class Harvest extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -9,7 +9,8 @@ class Mill extends Model {
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
         },
-        name: DataTypes.STRING,
+        start_date: DataTypes.DATE,
+        end_date: DataTypes.DATE,
       },
       {
         sequelize,
@@ -18,9 +19,8 @@ class Mill extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
-    this.hasMany(models.Harvest, { foreignKey: 'mill_id', as: 'harvests' });
+    this.belongsTo(models.Mill, { foreignKey: 'mill_id', as: 'mill' });
   }
 }
 
-module.exports = Mill;
+module.exports = Harvest;
