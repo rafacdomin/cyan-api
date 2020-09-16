@@ -26,7 +26,7 @@ export default {
   },
   async index(req, res) {
     const harvests = await Harvest.findAll({
-      // include: { association: 'farms' },
+      include: { association: 'farms' },
     });
 
     return res.json(harvests);
@@ -48,10 +48,12 @@ export default {
       throw new AppError("User doesn't have permission", 401);
     }
 
-    const mill = await Mill.findByPk(mill_id);
+    if (mill_id) {
+      const mill = await Mill.findByPk(mill_id);
 
-    if (mill.user_id !== req.user_id) {
-      throw new AppError("User doesn't have permission");
+      if (mill.user_id !== req.user_id) {
+        throw new AppError("User doesn't have permission");
+      }
     }
 
     await harvest.update({ start_date, end_date, mill_id });

@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import MillController from '../app/controllers/MillController';
 import HarvestController from '../app/controllers/HarvestController';
+import FarmController from '../app/controllers/FarmController';
 import authMiddleware from '../app/middlewares/auth';
 
 const mapRoutes = Router();
@@ -23,5 +24,10 @@ mapRoutes.delete(
   authMiddleware,
   HarvestController.delete,
 );
+
+mapRoutes.post('/farms', authMiddleware, FarmController.store);
+mapRoutes.get('/farms', FarmController.index);
+mapRoutes.put('/farms/:farm_id', authMiddleware, FarmController.update);
+mapRoutes.delete('/farms/:farm_id', authMiddleware, FarmController.delete);
 
 export default mapRoutes;
