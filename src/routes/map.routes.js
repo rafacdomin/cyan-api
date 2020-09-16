@@ -3,6 +3,7 @@ import { Router } from 'express';
 import MillController from '../app/controllers/MillController';
 import HarvestController from '../app/controllers/HarvestController';
 import FarmController from '../app/controllers/FarmController';
+import FieldController from '../app/controllers/FieldController';
 import authMiddleware from '../app/middlewares/auth';
 
 const mapRoutes = Router();
@@ -29,5 +30,7 @@ mapRoutes.post('/farms', authMiddleware, FarmController.store);
 mapRoutes.get('/farms', FarmController.index);
 mapRoutes.put('/farms/:farm_id', authMiddleware, FarmController.update);
 mapRoutes.delete('/farms/:farm_id', authMiddleware, FarmController.delete);
+
+mapRoutes.post('/fields', authMiddleware, FieldController.store);
 
 export default mapRoutes;

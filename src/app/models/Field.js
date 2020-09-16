@@ -1,6 +1,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 
-class Farm extends Model {
+class Field extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -9,7 +9,7 @@ class Farm extends Model {
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
         },
-        name: DataTypes.STRING,
+        geography: DataTypes.GEOGRAPHY('POINT'),
       },
       {
         sequelize,
@@ -18,9 +18,8 @@ class Farm extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Harvest, { foreignKey: 'harvest_id', as: 'harvest' });
-    this.hasMany(models.Field, { foreignKey: 'farm_id', as: 'fields' });
+    this.belongsTo(models.Farm, { foreignKey: 'farm_id', as: 'farm' });
   }
 }
 
-module.exports = Farm;
+module.exports = Field;
