@@ -25,7 +25,7 @@ export default {
     if (validate(mill)) {
       newMill = await Mill.findByPk(mill);
 
-      if (newMill.user_id !== user_id) {
+      if (newMill && newMill.user_id !== user_id) {
         throw new AppError('User unathourized', 401);
       }
     }
@@ -51,7 +51,7 @@ export default {
         include: { association: 'mill' },
       });
 
-      if (newHarvest.mill.user_id !== user_id) {
+      if (newHarvest && newHarvest.mill.user_id !== user_id) {
         throw new AppError('User unathourized', 401);
       }
 
@@ -76,7 +76,7 @@ export default {
       },
     });
 
-    if (newFarm.harvest.mill.user_id !== user_id) {
+    if (newFarm && newFarm.harvest.mill.user_id !== user_id) {
       newFarm = null;
     }
 
@@ -88,7 +88,7 @@ export default {
         },
       });
 
-      if (newFarm.harvest.mill.user_id !== user_id) {
+      if (newFarm && newFarm.harvest.mill.user_id !== user_id) {
         throw new AppError('User unathourized', 401);
       }
     }
