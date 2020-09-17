@@ -114,6 +114,8 @@ export default {
   },
 
   async index(req, res) {
+    const { mill, farm, field, harvest, start_date, end_date } = req.query;
+
     const fields = await Field.findAll({
       include: {
         association: 'farm',
@@ -121,7 +123,53 @@ export default {
       },
     });
 
-    return res.json(fields);
+    const filteredFields = fields
+      .filter(element => {
+        if (validate(field)) {
+          return element.id === field;
+        }
+        return element;
+      })
+      .filter(element => {
+        if (farm) {
+          if (validate(farm)) {
+            return element.farm.id === farm;
+          }
+
+          return element.farm.name === farm;
+        }
+
+        return element;
+      })
+      .filter(element => {
+        if (start_date) {
+          if (end_date) {
+            return (
+              element.farm.harvest.end_date === end_date &&
+              element.farm.harvest.start_date === start_date
+            );
+          }
+          return element.farm.harvest.start_date === start_date;
+        }
+        if (validate(harvest)) {
+          return element.farm.harvest === harvest;
+        }
+
+        return element;
+      })
+      .filter(element => {
+        if (mill) {
+          if (validate(mill)) {
+            return element.farm.harvest.mill.id === mill;
+          }
+
+          return element.farm.harvest.mill.name === mill;
+        }
+
+        return element;
+      });
+
+    return res.json(filteredFields);
   },
 
   async update(req, res) {
