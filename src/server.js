@@ -1,4 +1,6 @@
 import express from 'express';
+import http from 'http';
+import socketIO from 'socket.io';
 import cors from 'cors';
 import 'express-async-errors';
 
@@ -7,13 +9,21 @@ import AppError from './errors/AppError';
 
 import './database';
 
-const server = express();
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
 
-server.use(cors());
-server.use(express.json());
-server.use(Routes);
+io.on('connect', socket =>
+  console.log(`Client connected: ${socket.handshake.query.platform}`),
+);
 
-server.use((err, req, res, _) => {
+app.use((req, res, next) => {
+  req.io = io;
+
+  return next();
+});
+
+app.use((err, req, res, _) => {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       status: 'err',
@@ -28,6 +38,10 @@ server.use((err, req, res, _) => {
     message: 'Internal server error',
   });
 });
+
+app.use(cors());
+app.use(express.json());
+app.use(Routes);
 
 server.listen(3333, () => {
   console.log('Server started on port 3333');

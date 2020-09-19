@@ -1,4 +1,4 @@
-import { validate } from 'uuid';
+import { validate, v4 } from 'uuid';
 import AppError from '../../errors/AppError';
 import Farm from '../models/Farm';
 import Field from '../models/Field';
@@ -109,6 +109,17 @@ export default {
     } catch (err) {
       throw new AppError('Latitude and Longitude must be unique');
     }
+
+    const notification = {
+      id: v4(),
+      message: `New Field added on Farm: ${newFarm.name}, Mill: ${newMill.name}`,
+      position: {
+        lat: newField.geography.coordinates[0],
+        lng: newField.geography.coordinates[1],
+      },
+    };
+
+    req.io.emit('notification', notification);
 
     return res.json(newField);
   },
