@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev:server": "nodemon src/server.js",
+    "build": "sucrase ./src -d ./dist --transforms imports",
     "start": "node dist/server.js"
   },
   "dependencies": {
